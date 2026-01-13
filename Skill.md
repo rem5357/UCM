@@ -9,18 +9,19 @@
 MCP server providing date/time calculations for Claude Desktop. Addresses LLM limitations with temporal reasoning and date arithmetic. Built in Rust using the `rmcp` SDK.
 
 **Design Doc**: [UCM_DESIGN.md](UCM_DESIGN.md)
+**GitHub**: https://github.com/rem5357/UCM
 
 ---
 
 ## Current Status
 
-**Build #**: 1
-**Phase**: Core Complete
+**Build #**: 2
+**Phase**: Production Ready
 **Last Updated**: 2026-01-13
 
 ### Summary
 
-All 6 MCP tools implemented and working. 24 unit tests passing. Release binary built successfully.
+All 8 MCP tools implemented and working. 26 unit tests passing. Release binary built and configured in Claude Desktop.
 
 **Tools Implemented:**
 - `ucm_now` - Get current date/time
@@ -29,6 +30,8 @@ All 6 MCP tools implemented and working. 24 unit tests passing. Release binary b
 - `ucm_add` - Date arithmetic
 - `ucm_convert` - Duration conversions
 - `ucm_info` - Detailed date information
+- `ucm_status` - Server version/build info
+- `ucm_instructions` - Usage guide for Claude
 
 ---
 
@@ -51,12 +54,15 @@ All 6 MCP tools implemented and working. 24 unit tests passing. Release binary b
 - [x] Implement `ucm_add` - Date arithmetic
 - [x] Implement `ucm_convert` - Duration unit conversion
 - [x] Implement `ucm_info` - Rich date information
+- [x] Implement `ucm_status` - Server status/version
+- [x] Implement `ucm_instructions` - Usage instructions
 
 ### Phase 4: Integration
 - [x] Implement MCP server handler (main.rs)
-- [x] Write unit tests (24 tests)
-- [ ] Test with Claude Desktop
-- [ ] Create GitHub repository
+- [x] Write unit tests (26 tests)
+- [x] Configure Claude Desktop
+- [x] Create GitHub repository
+- [ ] Test with Claude Desktop (restart required)
 
 ### Phase 5: Polish
 - [ ] Error handling refinement
@@ -74,6 +80,8 @@ All 6 MCP tools implemented and working. 24 unit tests passing. Release binary b
 3. **Tool Router Pattern**: The server struct needs a `tool_router: ToolRouter<Self>` field, initialized with `Self::tool_router()` in the constructor. Use `#[tool_router]` on the impl block with tools and `#[tool_handler]` on the ServerHandler impl.
 
 4. **Return Types**: Tool methods can return simple types like `String` directly - the framework converts them to `CallToolResult` automatically.
+
+5. **Build Number Tracking**: Centralized build number in `src/tools/status.rs` as a const. Increment manually before each release build.
 
 ---
 
@@ -108,7 +116,8 @@ echo '{"jsonrpc":"2.0","id":1,"method":"tools/list"}' | ./target/release/ucm.exe
 - Release: `./target/release/ucm.exe`
 
 ### Claude Desktop Configuration
-Add to `claude_desktop_config.json`:
+Located at: `%APPDATA%\Claude\claude_desktop_config.json`
+
 ```json
 {
   "mcpServers": {
@@ -120,6 +129,8 @@ Add to `claude_desktop_config.json`:
 }
 ```
 
+**Note**: Restart Claude Desktop after configuration changes.
+
 ---
 
 ## Build History
@@ -127,21 +138,14 @@ Add to `claude_desktop_config.json`:
 | Build # | Date | Notes |
 |---------|------|-------|
 | 0 | 2026-01-13 | Project initialized, design doc complete |
-| 1 | 2026-01-13 | All 6 tools implemented, 24 tests passing, release binary built |
+| 1 | 2026-01-13 | All 6 tools implemented, 24 tests passing |
+| 2 | 2026-01-13 | Added ucm_status + ucm_instructions, 26 tests, Claude Desktop configured |
 
 ---
 
 ## Git/GitHub
 
-### Initial Setup
-```bash
-git init
-git add .
-git commit -m "Initial commit: UCM project with design doc"
-git branch -M main
-git remote add origin <your-github-repo-url>
-git push -u origin main
-```
+**Repository**: https://github.com/rem5357/UCM
 
 ### After Each Build
 ```bash

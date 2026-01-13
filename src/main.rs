@@ -12,7 +12,7 @@ mod parser;
 mod tools;
 mod types;
 
-use tools::{ucm_add, ucm_convert, ucm_diff, ucm_info, ucm_now, ucm_parse};
+use tools::{ucm_add, ucm_convert, ucm_diff, ucm_info, ucm_instructions, ucm_now, ucm_parse, ucm_status};
 
 // Parameter types for tools
 #[derive(Debug, Deserialize, schemars::JsonSchema)]
@@ -109,6 +109,18 @@ impl UcmServer {
             Err(error) => serde_json::to_string_pretty(&error).unwrap(),
         }
     }
+
+    #[tool(description = "Get UCM server status, version, and build information")]
+    fn ucm_status(&self) -> String {
+        let response = ucm_status();
+        serde_json::to_string_pretty(&response).unwrap()
+    }
+
+    #[tool(description = "Get instructions on how to use UCM tools and what to expect from responses")]
+    fn ucm_instructions(&self) -> String {
+        let response = ucm_instructions();
+        serde_json::to_string_pretty(&response).unwrap()
+    }
 }
 
 #[tool_handler]
@@ -117,9 +129,9 @@ impl rmcp::ServerHandler for UcmServer {
         ServerInfo {
             instructions: Some(
                 "Universal Calendar Manager - Date/time calculations for Claude Desktop. \
-                 Use ucm_now for current time, ucm_parse for natural language dates, \
-                 ucm_diff for date differences, ucm_add for date arithmetic, \
-                 ucm_convert for duration conversions, ucm_info for date details."
+                 Use ucm_instructions to learn how to use all tools. \
+                 Use ucm_status for version/build info. \
+                 Core tools: ucm_now, ucm_parse, ucm_diff, ucm_add, ucm_convert, ucm_info."
                     .into(),
             ),
             capabilities: ServerCapabilities::builder().enable_tools().build(),

@@ -97,6 +97,33 @@ pub struct InfoResponse {
     pub is_past: bool,
 }
 
+/// Response for ucm_status
+#[derive(Debug, Serialize)]
+pub struct StatusResponse {
+    pub name: String,
+    pub version: String,
+    pub build: u32,
+    pub description: String,
+    pub tools_available: Vec<String>,
+}
+
+/// Response for ucm_instructions
+#[derive(Debug, Serialize)]
+pub struct InstructionsResponse {
+    pub overview: String,
+    pub tools: Vec<ToolInstruction>,
+    pub response_format: String,
+    pub tips: Vec<String>,
+}
+
+#[derive(Debug, Serialize)]
+pub struct ToolInstruction {
+    pub name: String,
+    pub description: String,
+    pub parameters: String,
+    pub example: String,
+}
+
 /// Error response
 #[derive(Debug, Serialize)]
 pub struct UcmError {
